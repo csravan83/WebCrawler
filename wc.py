@@ -3,6 +3,11 @@ from bs4 import BeautifulSoup
 import csv
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+import re
+
+def striphtml(data):
+    p = re.compile(r'<.*?>')
+    return p.sub('', data)
 
 driver = webdriver.Chrome()
 driver.get('http://www.imdb.com/?ref_=nv_home')
@@ -23,12 +28,12 @@ req = requests.get(url)
 rev_soup = BeautifulSoup(req.text, "html.parser")
 x = []
 res = []
-f = 'rev1.csv'
+f = 'rev2.csv'
 f1 = open(f, mode='w')
 wr = csv.writer(f1, dialect='excel')
 
 for i in range(1,10):
     x = (rev_soup.find("div", {"id": "tn15content"}).findAll('p'))[i]
-    wr.writerow([x])
+    wr.writerow([striphtml(str(x))])
 
 f1.close()
